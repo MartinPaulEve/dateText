@@ -1,3 +1,5 @@
+(c) Copyright Martin Paul Eve, 2016. Released under the GNU Public Affero License v3. See LICENSE for more. 
+
 Takes a file called infile.txt and produces an output file, dated_outfile.csv, that contains a list of dates for each word in infile.txt.
 
 The program expects there to be one word per line in infile.txt.
