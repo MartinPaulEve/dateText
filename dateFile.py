@@ -13,6 +13,8 @@ def main():
     # this pattern is designed to match a date range (e.g. 1900-1905)
     date_pattern = re.compile('\d{4}-\d{4}')
 
+    date_before_pattern = re.compile('\d{3,4};')
+
     # build a regular expression pattern that can be used to see whether there is a "word usage" section
     usage_pattern = re.compile('Origin of')
 
@@ -58,7 +60,17 @@ def main():
                         output_writer.writerow([word, date_range])
 
                     else:
-                        write_failure(output_writer, word)
+                        # see if this is a "before 900"-type date
+                        xml = soup_object.find('span', text=date_before_pattern)
+
+                        if xml:
+                            date_range = xml.getText()
+
+                            # write the found date to the CSV
+                            print('[{0}]: {1}'.format(word, date_range))
+                            output_writer.writerow([word, date_range])
+                        else:
+                            write_failure(output_writer, word)
                 else:
                     write_failure(output_writer, word)
 
