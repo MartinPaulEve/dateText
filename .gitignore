@@ -97,3 +97,4 @@ ENV/
 /infile.txt
 /outfile.txt
 /filterFile.py
+/popularity_outfile.csv
