@@ -25,16 +25,24 @@ def main():
             # read the input text line by line into the text_list variable
             text_list = text.readlines()
 
+            count = 0
+
             # iterate over the words
             for word in text_list:
+                count += 1
+
                 # remove any trailing newline characters
                 word = word.strip('\n')
 
                 # create a string of a URL that
                 url = 'http://stats.merriam-webster.com/pop-score-redesign.php?word={0}&id=popularity-score'.format(word)
 
-                # wait 10 seconds so that we do not hammer the dictionary.com server
-                time.sleep(10)
+                if count == 20:
+                    time.sleep(2000)
+                    count = 0
+                else:
+                    # wait 10 seconds so that we do not hammer the dictionary.com server
+                    time.sleep(10)
 
                 # Get the fetched page
                 fetched_page = requests.get(url, headers=headers).text
