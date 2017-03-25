@@ -10,6 +10,18 @@ Anticipated usage is for verifying linguistic accuracy of language used in histo
 
 At the moment, this tool searches for usages on dictionary.com that specify a date range (e.g. 1900-1905) and single dates (900, "before 900") etc.
 
+This scraper uses dictionary.com
+
+# OEDdate.py
+
+Takes a file called infile.txt and produces an output file, dated_outfile.csv, that contains a list of dates for each word in infile.txt.
+
+The program expects there to be one word per line in infile.txt.
+
+Anticipated usage is for verifying linguistic accuracy of language used in historical fiction/parody
+
+This scraper uses the experimental Oxford Dictionaries API: https://developer.oxforddictionaries.com/our-data
+
 # findPopularity.py
 
 Uses Merriam Webster's "how popular is this word" feature to produce an output CSV of popularity for words within "outfile.txt".
