@@ -29,25 +29,74 @@ def main():
 
                 url = base_url + word
 
-                resp = requests.get(url, headers=headers)
+                try:
+                    fetch_and_check(base_url, csv_out, headers, output_writer, url, word)
+                except:
+                    print("Waiting 20 seconds before retrying")
+                    time.sleep(20)
 
-                js = bytes()
+                    try:
+                        fetch_and_check(base_url, csv_out, headers, output_writer, url, word)
+                    except:
+                        print("Waiting 20 seconds before retrying")
+                        time.sleep(20)
 
-                for chunk in resp.iter_content(chunk_size=512 * 1024):
-                    js += chunk
+                        try:
+                            fetch_and_check(base_url, csv_out, headers, output_writer, url, word)
+                        except:
+                            print("Waiting 20 seconds before retrying")
+                            time.sleep(20)
 
-                js = js.decode('utf-8')
+                            try:
+                                fetch_and_check(base_url, csv_out, headers, output_writer, url, word)
+                            except:
+                                print("FAILED at {0}".format(word))
 
-                representation = json.loads(js)
 
-                if len(representation) > 0:
-                    if 'daterange' in representation[0][0]:
-                        print('[{0}]: {1}'.format(word, representation[0][0]['daterange']['start']))
-                        output_writer.writerow([word, representation[0][0]['daterange']['start']])
-                        csv_out.flush()
-                else:
-                    print('[{0}]: {1}'.format(word, 'No date'))
-                    output_writer.writerow([word, '0'])
+def fetch_and_check(base_url, csv_out, headers, output_writer, url, word):
+    resp = requests.get(url, headers=headers)
+    js = bytes()
+    for chunk in resp.iter_content(chunk_size=512 * 1024):
+        js += chunk
+    js = js.decode('utf-8')
+    representation = json.loads(js)
+    if len(representation) > 0:
+        if 'daterange' in representation[0][0]:
+            print('[{0}]: {1}'.format(word, representation[0][0]['daterange']['start']))
+            output_writer.writerow([word, representation[0][0]['daterange']['start']])
+            csv_out.flush()
+    elif word.endswith('s'):
+        if word.endswith('ies'):
+            word = word[0:len(word) - 3] + 'y'
+        elif word.endswith('es'):
+            word = word[0:len(word) - 1]
+        else:
+            word = word[0:len(word) - 1]
+
+        url = base_url + word
+
+        resp = requests.get(url, headers=headers)
+
+        js = bytes()
+
+        for chunk in resp.iter_content(chunk_size=512 * 1024):
+            js += chunk
+
+        js = js.decode('utf-8')
+
+        representation = json.loads(js)
+        if len(representation) > 0:
+            if 'daterange' in representation[0][0]:
+                print('[{0}]: {1}'.format(word, representation[0][0]['daterange']['start']))
+                output_writer.writerow([word, representation[0][0]['daterange']['start']])
+                csv_out.flush()
+        else:
+            print('[{0}]: {1}'.format(word, 'No date'))
+            output_writer.writerow([word, '0'])
+    else:
+        print('[{0}]: {1}'.format(word, 'No date'))
+        output_writer.writerow([word, '0'])
+
 
 if __name__ == "__main__":
     main()
